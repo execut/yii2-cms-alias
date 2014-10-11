@@ -1,0 +1,34 @@
+{
+	"name": "infoweb-internet-solutions/yii2-cms-alias",
+	"description": "Alias module for Yii2",
+	"keywords": ["yii2", "yii2-cms-alias", "alias", "infoweb"],
+	"type": "yii2-extension",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/infoweb-internet-solutions/yii2-cms-alias/issues?state=open",
+        "source": "https://github.com/infoweb-internet-solutions/yii2-cms-alias"
+    },
+    "authors": [
+        {
+            "name": "Fabio Maggio",
+            "email": "fabio@infoweb.be",
+            "homepage": "https://github.com/fabiomaggio"
+        },
+        {
+            "name": "Ruben Heymans",
+            "email": "ruben@infoweb.be",
+            "homepage": "http://www.infoweb.be/"
+        }
+    ],
+    "minimum-stability": "dev",
+	"require": {
+	   "yiisoft/yii2": "*",
+	   "infoweb-internet-solutions/yii2-cms": "*",
+	   "infoweb-internet-solutions/yii2-cms-pages": "*"
+	},
+	"autoload": {
+		"psr-4": {
+            "infoweb\\alias\\": ""
+        }
+	}
+}
