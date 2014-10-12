@@ -10,9 +10,9 @@ use yii\db\Query;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\base\Model;
-use infoweb\alias\models\Seo;
-use infoweb\alias\models\SeoLang;
-use infoweb\alias\models\SeoSearch;
+use infoweb\alias\models\Alias;
+use infoweb\alias\models\AliasLang;
+use infoweb\alias\models\AliasSearch;
 
 /**
  * AliasController implements the CRUD actions for Alias model.
@@ -148,7 +148,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '{entity} "{item}" has been created', ['entity' => $model->entityTypeName, 'item' => $model->entityModel->name]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', 'Alias "{alias}" has been created', ['alias' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {
@@ -253,7 +253,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '{entity} "{item}" has been updated', ['entity' => $model->entityTypeName, 'item' => $model->entityModel->name]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', 'Alias "{alias}" has been updated', ['alias' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {

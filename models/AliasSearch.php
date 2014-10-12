@@ -49,10 +49,10 @@ class AliasSearch extends Alias
     public function search($params)
     {
         $query = Alias::find();
-
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-        ]);
+        ]);        
         
         // Join the entity model as a relation
         $query->joinWith(['entityModel' => function($query) {

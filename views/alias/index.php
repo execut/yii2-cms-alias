@@ -24,8 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'Seo',
-]), ['create'], ['class' => 'btn btn-success']) ?>
+            'modelClass' => 'Alias',
+        ]), ['create'], ['class' => 'btn btn-success']); ?>
     </p>
 
     <?php Pjax::begin([
@@ -45,6 +45,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => Yii::t('app', 'Name'),
                 'attribute' => 'entityModel.name',
                 'value' => 'entityModel.name',
+                'enableSorting' => true
+            ],
+            [
+                'class' => 'kartik\grid\DataColumn',
+                'label' => Yii::t('app', 'Url'),
+                'value' => function($data) {
+                    return '/'.Yii::$app->language.'/'.$data->url;
+                },
                 'enableSorting' => true
             ],
             [

@@ -15,5 +15,10 @@ use infoweb\alias\models\Alias;
     
     <?= $form->field($model, 'entity')->dropDownList(['page' => Yii::t('app', 'Page')]); ?>
     
-    <?= $form->field($model, 'entity_id')->dropDownList(ArrayHelper::map($entities['pages'], 'id', 'name')); ?>
+    <?= $form->field($model, 'entity_id')->dropDownList(
+        ArrayHelper::map($entities['pages'], 'id', 'name'),
+        [
+            'prompt' => Yii::t('app', 'Choose a page')
+        ]);
+    ?>
 </div>

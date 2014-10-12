@@ -79,7 +79,7 @@ class Alias extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'type'
+            'type' => Yii::t('app', 'Type'),
             'entity' => Yii::t('app', 'Entity'),
             'entity_id' => Yii::t('app', 'Entity ID'),
             'created_at' => Yii::t('app', 'Created At'),
@@ -98,7 +98,7 @@ class Alias extends \yii\db\ActiveRecord
     public function getEntityModel()
     {
         switch ($this->entity) {
-            case self::TYPE_PAGE:
+            case self::ENTITY_PAGE:
             default:
                 return $this->hasOne(Page::className(), ['id' => 'entity_id']);
                 break;
