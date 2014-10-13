@@ -49,4 +49,4 @@ use yii\bootstrap\Tabs;
 
     <?php ActiveForm::end(); ?>
 
-</div
+</div>

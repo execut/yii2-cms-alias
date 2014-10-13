@@ -40,6 +40,11 @@ class AliasLang extends \yii\db\ActiveRecord
             [['alias_id', 'language'], 'unique', 'targetAttribute' => ['alias_id', 'language'], 'message' => Yii::t('app', 'The combination of Alias ID and Language has already been taken.')],
             [['language', 'url'], 'unique', 'targetAttribute' => ['language', 'url'], 'message' => Yii::t('app', 'The combination of Language and Url has already been taken.'), 'filter' => function($query) {
                 return $query->andWhere(['!=', 'alias_id', $this->alias_id]);    
+            }],
+            ['url', function($attribute, $params) {
+
+                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls))
+                    $this->addError($attribute, Yii::t('app', 'This is a reserved url and can not be used'));   
             }]
         ];
     }
