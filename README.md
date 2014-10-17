@@ -1,4 +1,4 @@
-SEO module for Yii 2
+Alias module for Yii 2
 ========================
 
 
@@ -35,6 +35,7 @@ return [
     'modules' => [
         'alias' => [
             'class' => 'infoweb\alias\Module',
+            'reservedUrls' => ['page'] // Url's that are reserved by the application
         ],
     ],
     ...
