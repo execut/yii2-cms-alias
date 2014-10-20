@@ -8,7 +8,7 @@ use kartik\grid\GridView;
 /* @var $searchModel app\models\AliasSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Alias');
+$this->title = Yii::t('infoweb/alias', 'Aliases');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="alias-index">
@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-            'modelClass' => 'Alias',
+            'modelClass' => Yii::t('infoweb/alias', 'Alias'),
         ]), ['create'], ['class' => 'btn btn-success']); ?>
     </p>
 

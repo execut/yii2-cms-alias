@@ -6,9 +6,9 @@ use yii\helpers\Html;
 /* @var $model app\models\Alias */
 
 $this->title = Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'Alias',
+    'modelClass' => Yii::t('infoweb/alias', 'Alias'),
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Alias'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('infoweb/alias', 'Aliases'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="alias-create">

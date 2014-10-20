@@ -148,7 +148,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', 'Alias "{alias}" has been created', ['alias' => $model->url]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{alias}" has been created', ['alias' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {
@@ -253,7 +253,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', 'Alias "{alias}" has been updated', ['alias' => $model->url]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{alias}" has been updated', ['alias' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {
@@ -297,7 +297,7 @@ class AliasController extends Controller
         if (($model = Alias::findOne($id)) !== null) {
             return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist'));
         }
     }
 }

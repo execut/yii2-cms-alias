@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Alias */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Alias'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('infoweb/alias', 'Alias'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="seo-view">

@@ -111,7 +111,7 @@ class Alias extends \yii\db\ActiveRecord
         switch ($this->entity) {
             // Page
             case 'page':
-                return Yii::t('app', 'Page');
+                return Yii::t('infoweb/pages', 'Page');
                 break;
         }    
     }
