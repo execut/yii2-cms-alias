@@ -13,21 +13,21 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="alias-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php // Title ?>
+    <h1>
+        <?= Html::encode($this->title) ?>
+        <?php // Buttons ?>
+        <div class="pull-right">
+            <?= Html::a(Yii::t('app', 'Create {modelClass}', [
+                'modelClass' => Yii::t('infoweb/alias', 'Alias'),
+            ]), ['create'], ['class' => 'btn btn-success']); ?>    
+        </div>
+    </h1>
     
-    <?php // Flash message ?>
-    <?php if (Yii::$app->getSession()->hasFlash('alias')): ?>
-    <div class="alert alert-success">
-        <p><?= Yii::$app->getSession()->getFlash('alias') ?></p>
-    </div>
-    <?php endif; ?>
+    <?php // Flash messages ?>
+    <?php echo $this->render('_flash_messages'); ?>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-            'modelClass' => Yii::t('infoweb/alias', 'Alias'),
-        ]), ['create'], ['class' => 'btn btn-success']); ?>
-    </p>
-
+    <?php // Gridview ?>
     <?php Pjax::begin([
         'id'=>'grid-pjax'
     ]); ?>

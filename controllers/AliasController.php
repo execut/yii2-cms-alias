@@ -148,7 +148,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{alias}" has been created', ['alias' => $model->url]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{item}" has been created', ['item' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {
@@ -253,7 +253,7 @@ class AliasController extends Controller
                 $model->language = Yii::$app->language;
                 
                 // Set flash message
-                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{alias}" has been updated', ['alias' => $model->url]));
+                Yii::$app->getSession()->setFlash('alias', Yii::t('app', '"{item}" has been updated', ['item' => $model->url]));
               
                 // Take appropriate action based on the pushed button
                 if (isset($post['close'])) {
