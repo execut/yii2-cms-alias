@@ -42,6 +42,11 @@ return [
 ];
 ```
 
+Import the translations and use category 'infoweb/alias':
+```
+yii i18n/import @infoweb/alias/messages
+```
+
 To use the module, execute yii migration
 ```
 yii migrate/up --migrationPath=@vendor/infoweb-internet-solutions/yii2-cms-alias/migrations
