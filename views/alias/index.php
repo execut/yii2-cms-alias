@@ -66,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'floatHeader' => true,
         'floatHeaderOptions' => ['scrollingTop' => 88],
         'hover' => true,
+        'export' => false,
     ]); ?>
 
 </div>
