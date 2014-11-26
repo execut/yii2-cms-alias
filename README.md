@@ -30,16 +30,13 @@ Once the extension is installed, simply modify your application configuration as
 Your backend configuration as follows:
 
 ```php
-return [
+'modules' => [
     ...
-    'modules' => [
-        'alias' => [
-            'class' => 'infoweb\alias\Module',
-            'reservedUrls' => ['page'] // Url's that are reserved by the application
-        ],
+    'alias' => [
+        'class' => 'infoweb\alias\Module',
+        'reservedUrls' => ['page'] // Url's that are reserved by the application
     ],
-    ...
-];
+],
 ```
 
 Import the translations and use category 'infoweb/alias':
