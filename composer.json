@@ -29,5 +29,8 @@
 		"psr-4": {
             "infoweb\\alias\\": ""
         }
-	}
+	},
+	"extra": {
+        "bootstrap": "infoweb\\alias\\Bootstrap"
+    }
 }
