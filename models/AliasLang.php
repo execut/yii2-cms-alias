@@ -46,9 +46,14 @@ class AliasLang extends \yii\db\ActiveRecord
             [['language', 'url'], 'unique', 'targetAttribute' => ['language', 'url'], 'message' => Yii::t('infoweb/alias', 'The combination of Language and Url has already been taken.'), 'filter' => function($query) {
                 // If an entityType is provided, use it to match with the alias table
                 // because an url has to be unique within a type of entity    
-                if ($this->entityType) {
-                    $query->innerJoin('alias', ['alias.entity' => $this->entityType, 'alias.id' => 'alias_lang.alias_id']);
-                }
+                /*if ($this->entityType) {
+                    $joinConditions = ['alias.entity' => $this->entityType];
+                    
+                    if ($this->isNewRecord)
+                        $joinConditions['alias.id'] = 'alias_lang.alias_id';
+                        
+                    $query->innerJoin('alias', $joinConditions);
+                }*/
                 
                 if (!$this->isNewRecord) {
                     $query->andWhere(['!=', 'alias_id', $this->alias_id]);    
