@@ -9,7 +9,8 @@ use infoweb\alias\models\Alias;
         Alias::TYPE_USER_DEFINED  => Yii::t('app', 'User defined')
     ],[
         'options' => [
-            Alias::TYPE_SYSTEM => ['disabled' => (Yii::$app->user->can('Superadmin')) ? false : true]
+            Alias::TYPE_SYSTEM => ['disabled' => (Yii::$app->user->can('Superadmin')) ? false : true],
+            Alias::TYPE_USER_DEFINED => ['disabled' => ($model->type == Alias::TYPE_SYSTEM && !Yii::$app->user->can('Superadmin')) ? true : false],
         ]
     ]); ?>
     
