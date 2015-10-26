@@ -17,7 +17,7 @@ class m141010_135644_init extends Migration
         $this->createTable('{{%alias}}', [
             'id'            => Schema::TYPE_PK,
             'type'          => "ENUM('system','user-defined') NOT NULL DEFAULT 'user-defined'",
-            'entity'        => "ENUM('page') NOT NULL DEFAULT 'page'",
+            'entity'        => Schema::TYPE_STRING . '(50) NOT NULL',
             'entity_id'     => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
             'created_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
             'updated_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
