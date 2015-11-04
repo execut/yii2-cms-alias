@@ -1,5 +1,6 @@
 <?php
 use yii\bootstrap\Tabs;
+use infoweb\cms\helpers\LanguageHelper;
 
 $tabs = [];
 
@@ -8,7 +9,8 @@ foreach (Yii::$app->params['languages'] as $languageId => $languageName) {
         $tabs[] = [
             'label' => $languageName,
             'content' => $this->render('_default_language_tab', ['model' => $model->getTranslation($languageId), 'form' => $form]),
-            'active' => ($languageId == Yii::$app->language) ? true : false
+            'active' => ($languageId == Yii::$app->language) ? true : false,
+            'options' => ['class' => (LanguageHelper::isRtl($languageId)) ? 'rtl' : ''],
         ];
     }
 ?>
