@@ -36,7 +36,7 @@ class m141010_135644_init extends Migration
         ], $tableOptions);
 
         $this->addPrimaryKey('alias_id_language', '{{%alias_lang}}', ['alias_id', 'language']);
-        $this->createIndex('language_url', '{{%alias_lang}}', ['language', 'url'], true);
+        //$this->createIndex('language_url', '{{%alias_lang}}', ['language', 'url'], true);
         $this->createIndex('language', '{{%alias_lang}}', 'language');
         $this->createIndex('url', '{{%alias_lang}}', 'url');
         $this->addForeignKey('FK_ALIAS_LANG_ALIAS_ID', '{{%alias_lang}}', 'alias_id', '{{%alias}}', 'id', 'CASCADE', 'RESTRICT');

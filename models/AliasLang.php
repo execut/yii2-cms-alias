@@ -54,9 +54,11 @@ class AliasLang extends \yii\db\ActiveRecord
                         
                     $query->innerJoin('alias', $joinConditions);
                 }*/
-                
+
+                $query->joinWith('alias')->andWhere(['entity' => 'reference_category']);
+
                 if (!$this->isNewRecord) {
-                    $query->andWhere(['!=', 'alias_id', $this->alias_id]);    
+                    $query->andWhere(['!=', 'alias_id', $this->alias_id]);
                 }
 
                 return $query;
