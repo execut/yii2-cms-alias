@@ -29,7 +29,7 @@ class m141010_135644_init extends Migration
         // Create 'alias_lang' table
         $this->createTable('{{%alias_lang}}', [
             'alias_id'      => Schema::TYPE_INTEGER . ' NOT NULL',
-            'language'      => Schema::TYPE_STRING . '(2) NOT NULL',
+            'language'      => Schema::TYPE_STRING . '(10) NOT NULL',
             'url'           => Schema::TYPE_STRING . '(255) NOT NULL',
             'created_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',
             'updated_at'    => Schema::TYPE_INTEGER . ' UNSIGNED NOT NULL',

@@ -40,7 +40,7 @@ class AliasLang extends \yii\db\ActiveRecord
             // Trim
             [['url'], 'trim'],
             [['alias_id'], 'integer'],
-            [['language'], 'string', 'max' => 2],
+            [['language'], 'string', 'max' => 10],
             [['url'], 'string', 'max' => 255],
             [['alias_id', 'language'], 'unique', 'targetAttribute' => ['alias_id', 'language'], 'message' => Yii::t('infoweb/alias', 'The combination of Alias ID and Language has already been taken.')],
             [['language', 'url'], 'unique', 'targetAttribute' => ['language', 'url'], 'message' => Yii::t('infoweb/alias', 'The combination of Language and Url has already been taken.'), 'filter' => function($query) {
