@@ -22,7 +22,6 @@ class Alias extends \yii\db\ActiveRecord
 {
     const TYPE_SYSTEM = 'system';
     const TYPE_USER_DEFINED = 'user-defined';
-    const ENTITY_PAGE = 'page';
     
     /**
      * @inheritdoc
@@ -38,7 +37,9 @@ class Alias extends \yii\db\ActiveRecord
             'trans' => [
                 'class' => TranslateableBehavior::className(),
                 'translationAttributes' => [
-                    'url'
+                    'url',
+                    'entity',
+                    'entity_id',
                 ]
             ],
             'timestamp' => [
@@ -60,10 +61,7 @@ class Alias extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['entity', 'entity_id'], 'required'],
-            [['entity'], 'string'],
-            [['entity_id', 'created_at', 'updated_at'], 'integer'],
-            [['entity', 'entity_id'], 'unique', 'targetAttribute' => ['entity', 'entity_id'], 'message' => Yii::t('app', 'The combination of Entity and Entity ID has already been taken.')],
+            [['created_at', 'updated_at'], 'integer'],
             // Types
             [['type'], 'string'],
             ['type', 'in', 'range' => [self::TYPE_SYSTEM, self::TYPE_USER_DEFINED]],
@@ -78,12 +76,7 @@ class Alias extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'ID'),
             'type' => Yii::t('app', 'Type'),
-            'entity' => Yii::t('app', 'Entity'),
-            'entity_id' => Yii::t('app', 'Entity ID'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -97,22 +90,12 @@ class Alias extends \yii\db\ActiveRecord
     
     public function getEntityModel()
     {
-        switch ($this->entity) {
-            case self::ENTITY_PAGE:
-            default:
-                return $this->hasOne(Page::className(), ['id' => 'entity_id']);
-                break;
-                
-        }            
+        return 'getEntityModel';
+        //return $this->hasOne(Page::className(), ['id' => 'entity_id']);
     }
 
     public function getEntityTypeName()
     {
-        switch ($this->entity) {
-            // Page
-            case 'page':
-                return Yii::t('infoweb/pages', 'Page');
-                break;
-        }    
+        return 'getEntityTypeName';
     }
 }
