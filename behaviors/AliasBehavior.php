@@ -1,22 +1,23 @@
 <?php
 
-namespace infoweb\seo\behaviors;
+namespace infoweb\alias\behaviors;
 
+use infoweb\alias\models\AliasLang;
 use yii;
-use infoweb\seo\models\Seo;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use infoweb\alias\models\Alias;
+use yii\web\Response;
+use yii\base\Model;
 
 class AliasBehavior extends Behavior
 {
-    public $titleAttribute = 'title';
-
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterUpdate',
-            ActiveRecord::EVENT_AFTER_INSERT => 'afterInsert',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_AFTER_UPDATE   => 'afterUpdate',
+            ActiveRecord::EVENT_AFTER_INSERT   => 'afterInsert',
+            ActiveRecord::EVENT_BEFORE_DELETE  => 'beforeDelete',
         ];
     }
 
@@ -27,13 +28,13 @@ class AliasBehavior extends Behavior
         // Wrap the everything in a database transaction
         $transaction = Yii::$app->db->beginTransaction();
 
-        // Create the seo tag
-        $seo = new Seo([
-            'entity'    => $this->owner->className(),
-            'entity_id' => $this->owner->id
+        // Create the alias
+        $alias = new Alias([
+            'entity_id' => $this->owner->id,
+            'type'      => $this->owner->type,
         ]);
 
-        if (!$seo->save()) {
+        if (!$alias->save()) {
             return false;
         }
 
@@ -41,16 +42,16 @@ class AliasBehavior extends Behavior
 
         foreach ($languages as $languageId => $languageName) {
 
-            // Save the seo tag translations
-            $data = $post['SeoLang'][$languageId];
+            // Save the alias tag translations
+            $data = $post['AliasLang'][$languageId];
 
-            $seo                = $this->owner->seo;
-            $seo->language      = $languageId;
-            $seo->title         = (!empty($data['title'])) ? $data['title'] : $post['Lang'][$languageId][$this->titleAttribute];
-            $seo->description   = $data['description'];
-            $seo->keywords      = $data['keywords'];
+            $alias = $this->owner->alias;
+            $alias->language = $languageId;
+            $alias->url = $data['url'];
+            $alias->entity = $this->owner->className();
+            $alias->entity_id = $this->owner->id;
 
-            if (!$seo->saveTranslation()) {
+            if (!$alias->saveTranslation()) {
                 return false;
             }
         }
@@ -69,19 +70,27 @@ class AliasBehavior extends Behavior
 
         $post = Yii::$app->request->post();
 
+        // Update alias type
+        $alias = $this->owner->alias;
+        $alias->type = $this->owner->type;
+
+        if (!$alias->save()) {
+            return false;
+        }
+
         // Save the translations
         foreach ($languages as $languageId => $languageName) {
 
-            // Save the seo tag translations
-            $data = $post['SeoLang'][$languageId];
+            // Save the alias tag translations
+            $data = $post['AliasLang'][$languageId];
 
-            $seo                = $this->owner->seo;
-            $seo->language      = $languageId;
-            $seo->title         = (!empty($data['title'])) ? $data['title'] : $post['Lang'][$languageId][$this->titleAttribute];
-            $seo->description   = $data['description'];
-            $seo->keywords      = $data['keywords'];
+            $alias = $this->owner->alias;
+            $alias->language = $languageId;
+            $alias->url = $data['url'];
+            $alias->entity = $this->owner->className();
+            $alias->entity_id = $this->owner->id;
 
-            if (!$seo->saveTranslation()) {
+            if (!$alias->saveTranslation()) {
                 return false;
             }
         }
@@ -94,25 +103,21 @@ class AliasBehavior extends Behavior
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSeo()
+    public function getAlias()
     {
-        return $this->owner->hasOne(Seo::className(), ['entity_id' => 'id'])->where(['entity' => $this->owner->className()]);
+        return Alias::findOne([
+            'entity'  => $this->owner->className(),
+            'entity_id' => $this->owner->getPrimaryKey(),
+            'language' => $this->owner->language,
+        ]);
+
     }
 
     public function beforeDelete()
     {
-        // Try to load and delete the attached 'Seo' entity
-        return $this->seo->delete();
+        // Try to load and delete the attached 'Alias' entity
+        return $this->alias->delete();
     }
 
-    /**
-     * Returns an array of the non-empty seo tags that are attached to the page.
-     *
-     * @return  array
-     */
-    public function getSeoTags()
-    {
-        return array_filter($this->owner->seo->getTranslation((($this->owner->language == null) ? Yii::$app->language : $this->owner->language))->attributes);
-    }
 
 }

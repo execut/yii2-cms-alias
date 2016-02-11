@@ -34,14 +34,6 @@ class Alias extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            'trans' => [
-                'class' => TranslateableBehavior::className(),
-                'translationAttributes' => [
-                    'url',
-                    'entity',
-                    'entity_id',
-                ]
-            ],
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
@@ -61,12 +53,27 @@ class Alias extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['entity', 'entity_id', 'language', 'url'], 'required'],
             [['created_at', 'updated_at'], 'integer'],
             // Types
             [['type'], 'string'],
             ['type', 'in', 'range' => [self::TYPE_SYSTEM, self::TYPE_USER_DEFINED]],
             // Default type to 'user-defined'
-            ['type', 'default', 'value' => self::TYPE_USER_DEFINED]
+            ['type', 'default', 'value' => self::TYPE_USER_DEFINED],
+            // Trim
+            [['url'], 'trim'],
+            [['entity_id'], 'integer'],
+            [['language'], 'string', 'max' => 10],
+            [['url', 'entity'], 'string', 'max' => 255],
+            //[['entity', 'entity_id', 'language'], 'unique', 'targetAttribute' => ['url'], 'message' => Yii::t('infoweb/alias', 'The combination of entity, entity ID and Language has already been taken.')],
+            [['language', 'entity', 'entity_id'], 'unique', 'targetAttribute' => ['language', 'entity', 'entity_id'], 'message' => Yii::t('app', 'The combination of Language, Entity and Entity ID has already been taken.')],
+            ['url', function($attribute, $params) {
+                // Check if the url is not a reserved url when:
+                //  - Inserting a new record
+                //  - Updating an existing record that is not part of a system alias
+                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls) && ($this->isNewRecord || (!$this->isNewRecord && $this->alias->type != Alias::TYPE_SYSTEM)))
+                    $this->addError($attribute, Yii::t('infoweb/alias', 'This is a reserved url and can not be used'));
+            }]
         ];
     }
 
@@ -77,21 +84,18 @@ class Alias extends \yii\db\ActiveRecord
     {
         return [
             'type' => Yii::t('app', 'Type'),
+            'alias_id' => Yii::t('infoweb/alias', 'Alias ID'),
+            'language' => Yii::t('app', 'Language'),
+            'url' => Yii::t('app', 'Url'),
+            'entity' => Yii::t('app', 'Entity'),
+            'entity_id' => Yii::t('app', 'Entity ID'),
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTranslations()
-    {
-        return $this->hasMany(AliasLang::className(), ['alias_id' => 'id']);
-    }
-    
     public function getEntityModel()
     {
         return 'getEntityModel';
-        //return $this->hasOne(Page::className(), ['id' => 'entity_id']);
+        //return $this->hasOne(Page::className(), ['id' => 'entity_id']);è
     }
 
     public function getEntityTypeName()
