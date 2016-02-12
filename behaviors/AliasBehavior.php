@@ -70,27 +70,22 @@ class AliasBehavior extends Behavior
 
         $post = Yii::$app->request->post();
 
-        // Update alias type
-        $alias = $this->owner->alias;
-        $alias->type = $this->owner->type;
-
-        if (!$alias->save()) {
-            return false;
-        }
-
         // Save the translations
         foreach ($languages as $languageId => $languageName) {
 
             // Save the alias tag translations
-            $data = $post['AliasLang'][$languageId];
+            $data = $post['Alias'][$languageId];
 
             $alias = $this->owner->alias;
-            $alias->language = $languageId;
+            $alias->type = $this->owner->type;
+            //$alias->language = $languageId;
             $alias->url = $data['url'];
-            $alias->entity = $this->owner->className();
-            $alias->entity_id = $this->owner->id;
+            //echo '<pre>'; print_r($alias->attributes); echo '</pre>'; exit();
+            //$alias->entity = $this->owner->className();
+            //$alias->entity_id = $this->owner->id;
 
-            if (!$alias->saveTranslation()) {
+            if (!$alias->save()) {
+                echo '<pre>'; print_r($alias->getErrors()); echo '</pre>'; exit();
                 return false;
             }
         }
@@ -105,11 +100,14 @@ class AliasBehavior extends Behavior
      */
     public function getAlias()
     {
+        return $this->owner->hasOne(Alias::className(), ['entity_id' => 'id'])->where(['entity' => $this->owner->className(), 'language' => $this->owner->language]);
+        /*
         return Alias::findOne([
             'entity'  => $this->owner->className(),
             'entity_id' => $this->owner->getPrimaryKey(),
             'language' => $this->owner->language,
         ]);
+        */
 
     }
 

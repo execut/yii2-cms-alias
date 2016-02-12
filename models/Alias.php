@@ -66,7 +66,7 @@ class Alias extends \yii\db\ActiveRecord
             [['language'], 'string', 'max' => 10],
             [['url', 'entity'], 'string', 'max' => 255],
             //[['entity', 'entity_id', 'language'], 'unique', 'targetAttribute' => ['url'], 'message' => Yii::t('infoweb/alias', 'The combination of entity, entity ID and Language has already been taken.')],
-            [['language', 'entity', 'entity_id'], 'unique', 'targetAttribute' => ['language', 'entity', 'entity_id'], 'message' => Yii::t('app', 'The combination of Language, Entity and Entity ID has already been taken.')],
+            [['language', 'entity', 'entity_id'], 'unique' /*, 'targetAttribute' => ['language', 'entity', 'entity_id']*/, 'message' => Yii::t('app', 'The combination of Language, Entity and Entity ID has already been taken.')],
             ['url', function($attribute, $params) {
                 // Check if the url is not a reserved url when:
                 //  - Inserting a new record
