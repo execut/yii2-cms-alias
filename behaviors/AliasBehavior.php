@@ -2,120 +2,132 @@
 
 namespace infoweb\alias\behaviors;
 
-use infoweb\alias\models\AliasLang;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 use infoweb\alias\models\Alias;
-use yii\web\Response;
-use yii\base\Model;
 
 class AliasBehavior extends Behavior
 {
+    /**
+     * @var string The fully qualified name of the class that the Alias applies to
+     */
+    public $entityType = '';
+
+    /**
+     * @var string The field of the owner that has to be used for Alias::$entity_id
+     */
+    public $entityIdField = 'id';
+
+    /**
+     * @var string The field of the owner that has to be used for Alias::$language
+     */
+    public $languageField = 'language';
+
+    /**
+     * @var string The key in the $_POST array that holds the value for Alias::$type
+     */
+    public $typePostKey = 'type';
+
+    /**
+     * @var Alias The Alias of the owner model
+     */
+    protected $aliasModel = null;
+
     public function events()
     {
         return [
-            ActiveRecord::EVENT_AFTER_UPDATE   => 'afterUpdate',
-            ActiveRecord::EVENT_AFTER_INSERT   => 'afterInsert',
-            ActiveRecord::EVENT_BEFORE_DELETE  => 'beforeDelete',
+            ActiveRecord::EVENT_BEFORE_VALIDATE => 'beforeValidate',
+            ActiveRecord::EVENT_AFTER_INSERT    => 'afterInsert',
+            ActiveRecord::EVENT_AFTER_UPDATE    => 'afterUpdate',
+            ActiveRecord::EVENT_BEFORE_DELETE   => 'beforeDelete'
         ];
+    }
+
+    public function beforeValidate($event)
+    {
+        // Update the alias before validation so that it is allways up to date
+        $this->updateAlias();
     }
 
     public function afterInsert($event)
     {
-        $languages = Yii::$app->params['languages'];
+        // Update the Alias model with an entity_id and save it
+        $this->alias->entity_id = $this->owner->{$this->entityIdField};
 
-        // Wrap the everything in a database transaction
-        $transaction = Yii::$app->db->beginTransaction();
-
-        // Create the alias
-        $alias = new Alias([
-            'entity_id' => $this->owner->id,
-            'type'      => $this->owner->type,
-        ]);
-
-        if (!$alias->save()) {
-            return false;
+        if (!$this->alias->save()) {
+            throw new \Exception('Saving of the Alias failed');
         }
-
-        $post = Yii::$app->request->post();
-
-        foreach ($languages as $languageId => $languageName) {
-
-            // Save the alias tag translations
-            $data = $post['AliasLang'][$languageId];
-
-            $alias = $this->owner->alias;
-            $alias->language = $languageId;
-            $alias->url = $data['url'];
-            $alias->entity = $this->owner->className();
-            $alias->entity_id = $this->owner->id;
-
-            if (!$alias->saveTranslation()) {
-                return false;
-            }
-        }
-
-        $transaction->commit();
 
         return true;
     }
 
     public function afterUpdate($event)
     {
-        $languages = Yii::$app->params['languages'];
-
-        // Wrap the everything in a database transaction
-        $transaction = Yii::$app->db->beginTransaction();
-
-        $post = Yii::$app->request->post();
-
-        // Save the translations
-        foreach ($languages as $languageId => $languageName) {
-
-            // Save the alias tag translations
-            $data = $post['Alias'][$languageId];
-
-            $alias = $this->owner->alias;
-            $alias->type = $this->owner->type;
-            //$alias->language = $languageId;
-            $alias->url = $data['url'];
-            //echo '<pre>'; print_r($alias->attributes); echo '</pre>'; exit();
-            //$alias->entity = $this->owner->className();
-            //$alias->entity_id = $this->owner->id;
-
-            if (!$alias->save()) {
-                echo '<pre>'; print_r($alias->getErrors()); echo '</pre>'; exit();
-                return false;
-            }
+        if (!$this->alias->save()) {
+            throw new \Exception('Saving of the Alias failed');
         }
-
-        $transaction->commit();
 
         return true;
     }
 
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()) {
+            return $this->owner->alias->delete();
+        } else {
+            return true;
+        }
+    }
+
     /**
-     * @return \yii\db\ActiveQuery
+     * Returns the Alias model.
+     * If it does not exist the first time this method is called, it is loaded
+     * or created and cached.
+     *
+     * @return Alias
      */
     public function getAlias()
     {
-        return $this->owner->hasOne(Alias::className(), ['entity_id' => 'id'])->where(['entity' => $this->owner->className(), 'language' => $this->owner->language]);
-        /*
-        return Alias::findOne([
-            'entity'  => $this->owner->className(),
-            'entity_id' => $this->owner->getPrimaryKey(),
-            'language' => $this->owner->language,
-        ]);
-        */
+        // Load Alias
+        if (!$this->aliasModel) {
+            $conditions = [
+                'entity'    => $this->entityType,
+                'entity_id' => $this->owner->{$this->entityIdField},
+                'language'  => $this->owner->{$this->languageField}
+            ];
+            $this->aliasModel = Alias::findOne($conditions);
 
+            // Create Alias
+            if (!$this->aliasModel) {
+                $this->aliasModel = new Alias($conditions);
+            }
+        }
+
+        return $this->aliasModel;
     }
 
-    public function beforeDelete()
+    /**
+     * Updates the Alias model attributes
+     */
+    protected function updateAlias()
     {
-        // Try to load and delete the attached 'Alias' entity
-        return $this->alias->delete();
+        if (Yii::$app->request->getIsPost()) {
+            $post = Yii::$app->request->post();
+            $type = Alias::TYPE_USER_DEFINED;
+            // Values from the $_POST array can be extracted by using the last
+            // part of $this->entityType and $this->typePostKey as keys.
+            $entityNameParts = explode('\\', $this->entityType);
+            $entityName = array_pop($entityNameParts);
+
+            if ($entityName && isset($post[$entityName])) {
+                if (isset($post[$entityName][$this->typePostKey])) {
+                    $type = $post[$entityName][$this->typePostKey];
+                }
+            }
+
+            $this->alias->type = $type;
+            $this->alias->url = $post['Alias'][$this->alias->language]['url'];
+        }
     }
-
-
 }
