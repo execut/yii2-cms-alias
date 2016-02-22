@@ -51,31 +51,35 @@ yii migrate/up --migrationPath=@vendor/infoweb-internet-solutions/yii2-cms-alias
 
 Behavior
 --------
+With this behavior you can manage the `url` field for the entity that the `Alias` is attached to.
+The `AliasBehavior` has to be attached to an `ActiveRecord` class that has a language identifier.
+Below is an example of how it can be attached to `\infoweb\pages\models\Page`
 
-To use AliasBehavior, insert the following code to your ActiveRecord class:
-
-```
-use infoweb\seo\behaviors\SeoBehavior;
+```php
+use infoweb\alias\behaviors\AliasBehavior;
 
 public function behaviors()
 {
     return [
         'alias' => [
             'class' => AliasBehavior::className(),
+            'entityType' => Page::className(),
+            'entityIdField' => 'page_id'
         ],
     ];
 }
 ```
 
-Add this code to your view
+The `url` field can be rendered in your `ActiveForm` view
 
-```
+```php
  // Initialize the tabs
-$tabs = [
-    ...
-    [
-        'label' => 'SEO',
-        'content' => $this->render('@infoweb/seo/views/behaviors/seo/_seo_tab', ['model' => $model, 'form' => $form]),
-    ],
-];
+<?= $this->render('@infoweb/alias/views/behaviors/alias/_url', [
+        'form' => $form,
+        'model' => $model,
+        'alias' => $alias,
+        'readonly' => false,
+        'duplicateable' => true,
+        'urlPrefix' => ''
+    ]) ?>
 ```
