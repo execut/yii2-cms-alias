@@ -6,8 +6,6 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
-use dosamigos\translateable\TranslateableBehavior;
-use infoweb\pages\models\Page;
 
 /**
  * This is the model class for table "alias".
@@ -22,13 +20,22 @@ class Alias extends \yii\db\ActiveRecord
 {
     const TYPE_SYSTEM = 'system';
     const TYPE_USER_DEFINED = 'user-defined';
-    
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return 'alias';
+    }
+
+    public static function primaryKey()
+    {
+        return [
+            'entity',
+            'entity_id',
+            'language'
+        ];
     }
 
     public function behaviors()
@@ -53,7 +60,10 @@ class Alias extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['entity', 'entity_id', 'language', 'url'], 'required'],
+            [['entity', 'language', 'url'], 'required'],
+            ['entity_id', 'required', 'when' => function($model) {
+                return !$this->isNewRecord;
+            }],
             [['created_at', 'updated_at'], 'integer'],
             // Types
             [['type'], 'string'],
@@ -65,13 +75,12 @@ class Alias extends \yii\db\ActiveRecord
             [['entity_id'], 'integer'],
             [['language'], 'string', 'max' => 10],
             [['url', 'entity'], 'string', 'max' => 255],
-            //[['entity', 'entity_id', 'language'], 'unique', 'targetAttribute' => ['url'], 'message' => Yii::t('infoweb/alias', 'The combination of entity, entity ID and Language has already been taken.')],
-            [['language', 'entity', 'entity_id'], 'unique' /*, 'targetAttribute' => ['language', 'entity', 'entity_id']*/, 'message' => Yii::t('app', 'The combination of Language, Entity and Entity ID has already been taken.')],
+            [['entity', 'language', 'url'], 'unique', 'targetAttribute' => ['entity', 'language', 'url'], 'message' => Yii::t('infoweb/alias', 'This url is already used')],
             ['url', function($attribute, $params) {
                 // Check if the url is not a reserved url when:
                 //  - Inserting a new record
                 //  - Updating an existing record that is not part of a system alias
-                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls) && ($this->isNewRecord || (!$this->isNewRecord && $this->alias->type != Alias::TYPE_SYSTEM)))
+                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls) && ($this->isNewRecord || (!$this->isNewRecord && $this->type != Alias::TYPE_SYSTEM)))
                     $this->addError($attribute, Yii::t('infoweb/alias', 'This is a reserved url and can not be used'));
             }]
         ];
@@ -94,12 +103,11 @@ class Alias extends \yii\db\ActiveRecord
 
     public function getEntityModel()
     {
-        return 'getEntityModel';
-        //return $this->hasOne(Page::className(), ['id' => 'entity_id']);è
+        return $this->hasOne($this->entity, ['id' => 'entity_id']);
     }
 
     public function getEntityTypeName()
     {
-        return 'getEntityTypeName';
+        return $this->entity;
     }
 }
