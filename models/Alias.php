@@ -80,7 +80,10 @@ class Alias extends \yii\db\ActiveRecord
                 // Check if the url is not a reserved url when:
                 //  - Inserting a new record
                 //  - Updating an existing record that is not part of a system alias
-                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls) && ($this->isNewRecord || (!$this->isNewRecord && $this->type != Alias::TYPE_SYSTEM)))
+                //  - The record is an instance of \infoweb\pages\models\Page
+                if (in_array($this->url, Yii::$app->getModule('alias')->reservedUrls) &&
+                    ($this->isNewRecord || (!$this->isNewRecord && $this->type != Alias::TYPE_SYSTEM)) &&
+                    $this->entity == \infoweb\pages\models\Page::className())
                     $this->addError($attribute, Yii::t('infoweb/alias', 'This is a reserved url and can not be used'));
             }]
         ];
