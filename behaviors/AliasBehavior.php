@@ -5,6 +5,7 @@ namespace infoweb\alias\behaviors;
 use yii;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use yii\helpers\StringHelper;
 use infoweb\alias\models\Alias;
 
 class AliasBehavior extends Behavior
@@ -46,17 +47,21 @@ class AliasBehavior extends Behavior
 
     public function beforeValidate($event)
     {
-        // Update the alias before validation so that it is allways up to date
-        $this->updateAlias();
+        if (Yii::$app->request->post(StringHelper::basename(Alias::className()), [])) {
+            // Update the alias before validation so that it is allways up to date
+            $this->updateAlias();
+        }
     }
 
     public function afterInsert($event)
     {
-        // Update the Alias model with an entity_id and save it
-        $this->alias->entity_id = $this->owner->{$this->entityIdField};
+        if (Yii::$app->request->post(StringHelper::basename(Alias::className()), [])) {
+            // Update the Alias model with an entity_id and save it
+            $this->alias->entity_id = $this->owner->{$this->entityIdField};
 
-        if (!$this->alias->save()) {
-            throw new \Exception('Saving of the Alias failed');
+            if (!$this->alias->save()) {
+                throw new \Exception('Saving of the Alias failed');
+            }
         }
 
         return true;
@@ -64,8 +69,10 @@ class AliasBehavior extends Behavior
 
     public function afterUpdate($event)
     {
-        if (!$this->alias->save()) {
-            throw new \Exception('Saving of the Alias failed');
+        if (Yii::$app->request->post(StringHelper::basename(Alias::className()), [])) {
+            if (!$this->alias->save()) {
+                throw new \Exception('Saving of the Alias failed');
+            }
         }
 
         return true;
@@ -108,7 +115,7 @@ class AliasBehavior extends Behavior
     }
 
     /**
-     * Updates the Alias model attributes
+     * Updates the Alias model attributes, based on data of the $_POST array
      */
     protected function updateAlias()
     {
@@ -127,7 +134,7 @@ class AliasBehavior extends Behavior
             }
 
             $this->alias->type = $type;
-            $this->alias->url = $post['Alias'][$this->alias->language]['url'];
+            $this->alias->url = $post[StringHelper::basename(Alias::className())][$this->alias->language]['url'];
         }
     }
 }
