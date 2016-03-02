@@ -49,11 +49,12 @@ To use the module, execute yii migration
 yii migrate/up --migrationPath=@vendor/infoweb-internet-solutions/yii2-cms-alias/migrations
 ```
 
-Behavior
---------
-With this behavior you can manage the `url` field for the entity that the `Alias` is attached to.
-The `AliasBehavior` has to be attached to an `ActiveRecord` class that has a language identifier.
-Below is an example of how it can be attached to `\infoweb\pages\models\Page`
+Behaviors
+---------
+
+The `AliasBehavior` is used to manage the `url` field for the entity that the `Alias` is attached to.
+The behavior has to be attached to an `ActiveRecord` class that has a language identifier.
+Below is an example of how it can be attached to `\infoweb\pages\models\Lang`
 
 ```php
 use infoweb\alias\behaviors\AliasBehavior;
@@ -82,4 +83,21 @@ The `url` field can be rendered in your `ActiveForm` view
         'duplicateable' => true,
         'urlPrefix' => ''
     ]) ?>
+```
+
+The `AliasRelationBehavior` is used to extend the entity for which you want to enable the usage of `Alias`.
+It defines custom event(s) and `getAlias` relation for the model.
+Below is an example of how it can be attached to `infoweb\pages\models\Page`
+
+```php
+use infoweb\alias\behaviors\AliasRelationBehavior;
+
+public function behaviors()
+{
+    return [
+        'aliasRelation' => [
+            'class' => AliasRelationBehavior::className(),
+        ],
+    ];
+}
 ```
