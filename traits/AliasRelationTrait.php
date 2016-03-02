@@ -26,7 +26,7 @@ trait AliasRelationTrait
             'entity' => parent::className(),
         ]);
 
-        return parent::findOne($aliasModel->entity_id);
+        return ($aliasmodel) ? parent::findOne($aliasModel->entity_id) : null;
     }
 
     public function events()
