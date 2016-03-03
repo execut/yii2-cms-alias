@@ -105,3 +105,5 @@ class Page extends ActiveRecord
 	use AliasRelationTrait;
 }
 ```
+
+You should also add a `getUrl` method to the entity (or modify it if it already exists) that uses the `url` field of the `getAlias` relation.
