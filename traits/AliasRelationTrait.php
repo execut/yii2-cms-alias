@@ -15,7 +15,7 @@ trait AliasRelationTrait
      *
      * @param string $alias The alias
      * @param mixed $language The language
-     * @return ActiveRecord An instance of the owner
+     * @return ActiveQuery
      */
     public static function findByAlias($alias = '', $language = null)
     {
@@ -26,7 +26,11 @@ trait AliasRelationTrait
             'entity' => parent::className(),
         ]);
 
-        return ($aliasModel) ? parent::findOne($aliasModel->entity_id) : null;
+        if (!$aliasModel) {
+            throw new \yii\web\NotFoundHttpException();
+        }
+
+        return parent::find()->where(['id' => $aliasModel->entity_id]);
     }
 
     public function events()
