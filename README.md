@@ -85,6 +85,12 @@ The `url` field can be rendered in your `ActiveForm` view
     ]) ?>
 ```
 
+If you want to automatically generate the alias based on the content of another field add this to its configuration:
+```php
+'data-slugable' => 'true',
+'data-slug-target' => "#alias-{$model->language}-url"
+```
+
 Trait
 -----
 The `AliasRelationTrait` is used to extend the entity for which you want to enable the usage of `Alias`.
