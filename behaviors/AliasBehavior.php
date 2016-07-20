@@ -137,4 +137,9 @@ class AliasBehavior extends Behavior
             $this->alias->url = $post[StringHelper::basename(Alias::className())][$this->alias->language]['url'];
         }
     }
+    
+    public function setAliasModel($aliasModel) {
+        $this->aliasModel = $aliasModel;
+        return $this;
+    }
 }
