@@ -134,7 +134,10 @@ class AliasBehavior extends Behavior
             }
 
             $this->alias->type = $type;
-            $this->alias->url = $post[StringHelper::basename(Alias::className())][$this->alias->language]['url'];
+
+            if(isset($post[StringHelper::basename(Alias::className())][$this->alias->language]['url'])) {
+                $this->alias->url = $post[StringHelper::basename(Alias::className())][$this->alias->language]['url'];
+            }
         }
     }
     
